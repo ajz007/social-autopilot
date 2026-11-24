@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family={{heading_font_url}}:wght@500;600;700&family={{body_font_url}}:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+  :root { --bg: {{background}}; --ink: {{ink}}; --accent: {{accent}}; --accent-ink: {{accent_ink}}; --gold: {{gold}}; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; }
+  body { font-family: '{{body_font}}', system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+  .card { position: relative; width: 1080px; height: 1350px; padding: 96px 96px 0; display: flex; flex-direction: column; }
+  .card::before { content: ""; position: absolute; inset: 32px; border: 2px solid var(--gold); border-radius: 28px; opacity: .55; pointer-events: none; }
+  .kicker { font-size: 28px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 36px; display: flex; align-items: center; gap: 20px; }
+  .kicker::before { content: ""; width: 56px; height: 3px; background: var(--gold); }
+  h1 { overflow-wrap: anywhere; font-family: '{{heading_font}}', Georgia, serif; font-weight: 600; font-size: 84px; line-height: 1.08; letter-spacing: -.01em; }
+  .body { font-size: 36px; line-height: 1.45; margin-top: 36px; opacity: .88; }
+  ol { list-style: none; margin-top: 60px; display: flex; flex-direction: column; gap: 38px; }
+  li { display: flex; gap: 28px; font-size: 40px; line-height: 1.35; align-items: baseline; }
+  li .n { font-family: '{{heading_font}}', Georgia, serif; color: var(--gold); font-size: 40px; font-weight: 700; min-width: 64px; }
+  .main { display: flex; flex-direction: column; }
+  .layout-tip .main, .layout-statement .main { flex: 1; justify-content: center; }
+  .body:empty { display: none; }
+  .shot { flex: 1; min-height: 0; margin-top: 56px; display: flex; justify-content: center; align-items: center; }
+  .shot img { display: block; border-radius: 24px; box-shadow: 0 30px 70px rgba(0,0,0,.3); }
+  .cta { display: inline-block; align-self: flex-start; margin-top: 40px; background: var(--accent); color: var(--accent-ink); font-size: 30px; font-weight: 600; padding: 20px 34px; border-radius: 999px; }
+  .cta:empty { display: none; }
+  footer { display: flex; justify-content: space-between; align-items: center; padding: 44px 0 80px; font-size: 28px; }
+  footer .brand { font-family: '{{heading_font}}', Georgia, serif; font-weight: 700; font-size: 34px; color: var(--accent); }
+  footer .domain { opacity: .7; letter-spacing: .02em; }
+
+  /* image layout: product shots and screenshots on the accent colour */
+  .layout-image { background: var(--accent); color: var(--accent-ink); }
+  .layout-image .kicker, .layout-image footer .brand { color: var(--accent-ink); }
+  .layout-image h1 { font-size: 68px; }
+  .layout-image .shot { padding-bottom: 8px; }
+  .layout-image .body { font-size: 32px; margin-top: 20px; }
+  .layout-image .cta { background: var(--accent-ink); color: var(--accent); }
+
+  /* statement layout: one big line, centred */
+  .layout-statement { background: var(--accent); color: var(--accent-ink); text-align: center; }
+  .layout-statement .kicker { color: var(--accent-ink); justify-content: center; }
+  .layout-statement .kicker::after { content: ""; width: 56px; height: 3px; background: var(--gold); }
+  .layout-statement .main { align-items: center; }
+  .layout-statement h1 { font-size: 92px; }
+  .layout-statement .body { font-size: 38px; max-width: 820px; }
+  .layout-statement .cta { align-self: center; background: var(--accent-ink); color: var(--accent); }
+  .layout-statement footer .brand { color: var(--accent-ink); }
+</style>
+</head>
+<body>
+  <div class="card layout-{{layout}}">
+    <div class="main">
+      <div class="kicker">{{kicker}}</div>
+      <h1>{{title}}</h1>
+      <div class="body">{{body}}</div>
+      {{points}}
+      <div class="cta">{{cta}}</div>
+    </div>
+    {{image}}
+    <footer><span class="brand">{{brand}}</span><span class="domain">{{domain}}</span></footer>
+  </div>
+<script>
+  // Scale screenshots up or down to fill the free space while keeping their shape.
+  const img = document.querySelector('.shot img');
+  if (img) {
+    const fit = () => {
+      const box = img.parentElement.getBoundingClientRect();
+      const scale = Math.min(box.width / img.naturalWidth, box.height / img.naturalHeight);
+      img.style.width = Math.floor(img.naturalWidth * scale) + 'px';
+      img.style.height = Math.floor(img.naturalHeight * scale) + 'px';
+    };
+    img.complete ? fit() : img.addEventListener('load', fit);
+  }
+</script>
+</body>
+</html>

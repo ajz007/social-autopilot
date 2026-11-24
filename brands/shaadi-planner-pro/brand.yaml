@@ -1,0 +1,34 @@
+# Brand settings for Shaadi Planner Pro.
+name: Shaadi Planner Pro
+site_url: https://shaadiplannerpro.com
+timezone: Asia/Kolkata
+platforms: [facebook, instagram]
+graph_api_version: v23.0
+utm_campaign: daily-social
+
+# Meta's servers download each image from this public address, so every file under
+# brands/shaadi-planner-pro/images/ must also be served here. images/01-guest-list.jpg
+# is fetched from <image_base_url>images/01-guest-list.jpg. See docs/image-hosting.md.
+image_base_url: https://shaadiplannerpro.com/social/
+
+# Names of the environment variables (GitHub Actions secrets) that hold credentials.
+env:
+  page_id: SPP_FB_PAGE_ID
+  page_token: SPP_FB_PAGE_TOKEN
+  ig_user_id: SPP_IG_USER_ID
+
+facebook:
+  max_hashtags: 3
+instagram:
+  max_hashtags: 12
+  link_text: "Link in bio 🔗"
+
+# Colours taken from the site's planner theme.
+card_style:
+  background: "#fff8e9"
+  ink: "#203c32"
+  accent: "#762747"
+  accent_ink: "#fff8e9"
+  gold: "#ac7937"
+  heading_font: Playfair Display
+  body_font: Inter

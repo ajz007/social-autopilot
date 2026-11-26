@@ -181,7 +181,7 @@ def cmd_setup_token() -> int:
     app_id = input("Meta app ID: ").strip()
     app_secret = getpass.getpass("Meta app secret: ").strip()
     short_token = getpass.getpass("User access token from Graph API Explorer: ").strip()
-    version = "v23.0"
+    version = "v27.0"
     try:
         user = Graph(short_token, version).get(
             "oauth/access_token",

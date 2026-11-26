@@ -109,7 +109,7 @@ def load_brand(brands_dir: Path, slug: str) -> Brand:
         timezone=str(raw.get("timezone") or "UTC"),
         image_base_url=image_base,
         platforms=list(platforms),
-        graph_api_version=str(raw.get("graph_api_version") or "v23.0"),
+        graph_api_version=str(raw.get("graph_api_version") or "v27.0"),
         env=dict(need("env")),
         utm_campaign=str(raw.get("utm_campaign") or "social-autopilot"),
         facebook=PlatformSettings(max_hashtags=int(fb.get("max_hashtags", 3))),

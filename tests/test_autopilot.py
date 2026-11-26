@@ -49,7 +49,7 @@ class FakeGraph:
         self.fail_on = fail_on
 
     def __call__(self, method, url, params):
-        path = url.split("/v23.0/", 1)[1]
+        path = url.split("/v27.0/", 1)[1]
         self.calls.append((method, path, dict(params)))
         if self.fail_on and self.fail_on in path:
             return 400, json.dumps({"error": {"message": "boom", "code": 100}}).encode()

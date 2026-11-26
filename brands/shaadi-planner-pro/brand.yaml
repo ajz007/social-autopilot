@@ -3,7 +3,7 @@ name: Shaadi Planner Pro
 site_url: https://shaadiplannerpro.com
 timezone: Asia/Kolkata
 platforms: [facebook, instagram]
-graph_api_version: v23.0
+graph_api_version: v27.0
 utm_campaign: daily-social
 
 # Meta's servers download each image from this public address, so every file under

@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import tempfile
@@ -71,6 +72,10 @@ class Base(unittest.TestCase):
         (root / "brands" / "test" / "brand.yaml").write_text(BRAND_YAML)
         (root / "brands" / "test" / "posts.yaml").write_text(POSTS_YAML)
         self.root = root
+        images = root / "brands" / "test" / "images"
+        images.mkdir()
+        for name in ("first", "a", "b"):
+            (images / f"{name}.jpg").write_bytes(b"jpeg")
         self.brand = load_brand(root / "brands", "test")
         self.posts = load_posts(self.brand)
         self.state = runner.State(root / "state" / "test.json")
@@ -186,6 +191,15 @@ class RunnerTests(Base):
         self.assertEqual(fake.calls, [])
         self.assertFalse(self.state.started("first"))
 
+    def test_unapproved_images_block_publishing_without_using_an_attempt(self):
+        (self.brand.root / "images" / "first.jpg").unlink()
+        fake = FakeGraph()
+        outcome = self.run_live(fake)
+        self.assertIn("approval", outcome.errors)
+        self.assertIn("Merge that week", outcome.errors["approval"])
+        self.assertEqual(fake.calls, [])
+        self.assertFalse(self.state.started("first"))
+
     def test_carousel_flow(self):
         self.run_live(FakeGraph())
         fake = FakeGraph()
@@ -238,6 +252,41 @@ class RenderTests(Base):
 
         with self.assertRaisesRegex(ConfigError, "cover needs"):
             render._cover_html({"left": 1, "top": 2, "width": "wide"})
+
+
+class PrepareTests(Base):
+    def cli(self, *args):
+        return main(["--brands-dir", str(self.root / "brands"), "--state-dir", str(self.root / "state"), *args])
+
+    def test_prepare_renders_only_the_next_unpublished_batch(self):
+        from autopilot import render
+
+        self.state.data["posts"] = {"first": {"facebook": {"id": "1", "at": "2026-11-01T00:00:00+00:00"},
+                                              "instagram": {"id": "2", "at": "2026-11-01T00:00:00+00:00"}}}
+        self.state.save()
+        rendered = []
+        manifest = self.root / "build" / "prepared.json"
+        with mock.patch.object(render, "render_post", side_effect=lambda brand, post, style, force=False:
+                               rendered.append(post.id) or [Path("x.jpg")]):
+            for post in self.posts:
+                post.card = {"layout": "statement", "title": post.id}
+            with mock.patch("autopilot.cli.load_posts", return_value=self.posts):
+                code = self.cli("prepare", "--brand", "test", "--days", "1", "--manifest", str(manifest))
+        self.assertEqual(code, 0)
+        self.assertEqual(rendered, ["second"])
+        self.assertEqual([p["id"] for p in json.loads(manifest.read_text())["posts"]], ["second"])
+
+    def test_preview_links_images_at_the_given_commit(self):
+        manifest = self.root / "prepared.json"
+        manifest.write_text(json.dumps({"brand": "test", "posts": [{"id": "second", "day": "2026-12-02"}]}))
+        out = io.StringIO()
+        with mock.patch("sys.stdout", out):
+            code = self.cli("preview", "--brand", "test", "--manifest", str(manifest), "--ref", "abc123", "--repo", "o/r")
+        self.assertEqual(code, 0)
+        text = out.getvalue()
+        self.assertIn("https://raw.githubusercontent.com/o/r/abc123/brands/test/images/a.jpg", text)
+        self.assertIn("Wed 02 Dec", text)
+        self.assertIn("Merging this pull request approves them", text)
 
 
 class RealBrandTests(unittest.TestCase):

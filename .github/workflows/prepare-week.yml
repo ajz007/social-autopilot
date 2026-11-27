@@ -1,0 +1,78 @@
+name: Prepare week
+
+on:
+  schedule:
+    # Sundays 03:30 UTC = 09:00 IST: the week's images are ready to review over Sunday breakfast.
+    - cron: "30 3 * * 0"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "How many upcoming posts to prepare"
+        type: number
+        default: 7
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: prepare-week
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        brand: [shaadi-planner-pro]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BRAND: ${{ matrix.brand }}
+      DAYS: ${{ inputs.days || 7 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip if last week's review is still open
+        id: open
+        run: |
+          gh label create weekly-posts --color C5A572 --description "Weekly post images for review" --force >/dev/null
+          count=$(gh pr list --label weekly-posts --state open --search "$BRAND in:title" --json number --jq length)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          [ "$count" = "0" ] || echo "::notice::A posts review for $BRAND is still open; merge or close it first."
+
+      - uses: actions/setup-python@v5
+        if: steps.open.outputs.count == '0'
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        if: steps.open.outputs.count == '0'
+        run: |
+          pip install -r requirements.txt pillow
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-color-emoji >/dev/null
+          google-chrome --version
+
+      - name: Render the coming week
+        if: steps.open.outputs.count == '0'
+        run: python -m autopilot prepare --brand "$BRAND" --days "$DAYS"
+
+      - name: Open the review pull request
+        if: steps.open.outputs.count == '0'
+        run: |
+          if [ -z "$(git status --porcelain "brands/$BRAND")" ]; then
+            echo "Nothing new to prepare."; exit 0
+          fi
+          read -r first last < <(python -c "import json; p=json.load(open('build/prepared.json'))['posts']; print(p[0]['day'], p[-1]['day'])")
+          branch="weekly-posts/$BRAND-$first"
+          git config user.name "social-autopilot"
+          git config user.email "social-autopilot@users.noreply.github.com"
+          git switch -c "$branch"
+          git add "brands/$BRAND"
+          git commit -m "Prepare $BRAND posts for $first to $last"
+          git push -u origin "$branch"
+          python -m autopilot preview --brand "$BRAND" --ref "$(git rev-parse HEAD)" > build/pr.md
+          gh pr create --base main --head "$branch" --label weekly-posts \
+            --title "Review $BRAND posts: $first to $last" --body-file build/pr.md

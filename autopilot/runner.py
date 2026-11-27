@@ -91,6 +91,15 @@ def choose(posts: list[Post], state: State, today: date, tz: ZoneInfo) -> tuple[
     return None, "the queue is empty"
 
 
+def missing_media(brand: Brand, post: Post) -> list[str]:
+    """Local media files that aren't in the repository yet.
+
+    Images arrive through the weekly pull request, so a missing file means that
+    week hasn't been approved (merged) yet.
+    """
+    return [m for m in post.media if not m.startswith(("http://", "https://")) and not (brand.root / m).is_file()]
+
+
 def remaining(posts: list[Post], state: State) -> int:
     return sum(1 for p in posts if not state.started(p.id))
 
@@ -136,6 +145,13 @@ def run(
 
     targets = pending_platforms(post, state, platform)
     outcome = Outcome(post, reason)
+    missing = missing_media(brand, post)
+    if missing:
+        outcome.errors["approval"] = (
+            f"images for {post.id} aren't in the repository yet ({', '.join(missing)}). "
+            "Merge that week's posts pull request to approve them."
+        )
+        return outcome
     if not targets:
         outcome.reason = "already published on the requested platforms"
         return outcome

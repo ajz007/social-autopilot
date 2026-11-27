@@ -13,12 +13,16 @@ import os
 import shutil
 import subprocess
 import tempfile
+import zlib
 from pathlib import Path
 
 from .config import Brand, ConfigError, Post
 
 WIDTH, HEIGHT = 1080, 1350
 TEMPLATE = Path(__file__).parent / "templates" / "card.html"
+SCENES_JS = Path(__file__).parent / "templates" / "scenes.js"
+SCENES = ("lights", "toran", "diyas", "mehendi", "kolam", "dhol")
+LIGHT_SCENES = ("mehendi",)  # scenes that need dark text
 
 DEFAULT_STYLE = {
     "background": "#fff8e9",
@@ -87,9 +91,21 @@ def card_html(brand: Brand, spec: dict, style: dict) -> str:
             f"{covers}</div></div>"
         )
 
+    scene = spec.get("scene", "")
+    if scene and scene not in SCENES:
+        raise ConfigError(f"unknown scene '{scene}', choose from {', '.join(SCENES)}")
+    classes = [f"layout-{layout}"]
+    if scene:
+        classes += ["has-scene", f"scene-{scene}", "scene-light" if scene in LIGHT_SCENES else "scene-dark"]
+    if spec.get("align") in ("top", "center", "bottom"):
+        classes.append(f"align-{spec['align']}")
+    seed = int(spec.get("seed") or zlib.crc32(str(spec.get("title", "")).encode()) % 100000 or 1)
+
     domain = brand.site_url.split("://", 1)[-1]
     replacements = {
-        "{{layout}}": layout,
+        "{{classes}}": " ".join(classes),
+        "{{scene}}": scene,
+        "{{seed}}": str(seed),
         "{{kicker}}": e(str(spec.get("kicker", ""))),
         "{{title}}": e(str(spec.get("title", ""))).replace("\n", "<br>"),
         "{{body}}": e(str(spec.get("body", ""))).replace("\n", "<br>"),
@@ -106,7 +122,8 @@ def card_html(brand: Brand, spec: dict, style: dict) -> str:
     page = TEMPLATE.read_text(encoding="utf-8")
     for key, value in replacements.items():
         page = page.replace(key, value)
-    return page
+    # Inserted last so nothing in the script is mistaken for a placeholder.
+    return page.replace("/*{{scenes_js}}*/", SCENES_JS.read_text(encoding="utf-8") if scene else "")
 
 
 def _cover_html(cover: dict) -> str:
@@ -182,6 +199,8 @@ def screenshot(page: str, out: Path) -> None:
             f"--screenshot={_host_path(png, chrome)}",
             url,
         ]
+        if os.environ.get("CI") and not chrome.lower().endswith(".exe"):
+            cmd.insert(1, "--no-sandbox")  # GitHub's Linux runners don't support Chrome's sandbox
         subprocess.run(cmd, check=False, capture_output=True, timeout=120)
         if not png.is_file():
             raise RenderError(f"Chrome did not produce a screenshot for {out.name}")

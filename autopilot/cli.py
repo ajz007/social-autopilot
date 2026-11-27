@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -39,6 +40,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--platform", choices=["facebook", "instagram"])
     add("check", "verify the access token, Page and Instagram account")
     sub.add_parser("setup-token", help="turn a short-lived user token into a never-expiring Page token")
+    pr = add("prepare", "render images for the next few unpublished posts (the weekly review batch)")
+    pr.add_argument("--days", type=int, default=7)
+    pr.add_argument("--force", action="store_true", help="re-render images that already exist")
+    pr.add_argument("--manifest", type=Path, default=REPO / "build" / "prepared.json")
+    pv = add("preview", "write a Markdown preview of the prepared posts, for the review pull request")
+    pv.add_argument("--manifest", type=Path, default=REPO / "build" / "prepared.json")
+    pv.add_argument("--ref", required=True, help="commit SHA or branch the images are pushed to")
+    pv.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", ""), help="owner/name on GitHub")
     r = add("render", "render card images for posts that define a card")
     r.add_argument("--post-id")
     r.add_argument("--force", action="store_true", help="re-render cards that already exist")
@@ -59,18 +68,26 @@ def main(argv: list[str] | None = None) -> int:
 def cmd_validate(args, brand, posts, state) -> int:
     issues = [msg for post in posts for msg in compose.problems(brand, post)]
     for post in posts:
-        for m in post.media:
-            if not m.startswith(("http://", "https://")) and not (brand.root / m).is_file():
-                issues.append(f"{post.id}: local file {m} does not exist (run the render command?)")
+        if post.card and not post.media:
+            issues.append(f"{post.id}: has a card but no media path to render it to")
+        if post.card:
+            try:
+                render.cards_for(post)
+            except ConfigError as exc:
+                issues.append(str(exc))
+    awaiting = [p.id for p in posts if runner.missing_media(brand, p) and not state.started(p.id)]
     if args.check_urls:
         for post in posts:
+            missing = set(runner.missing_media(brand, post))
             for m in post.media:
+                if m in missing:
+                    continue  # not rendered yet; the weekly batch will make it
                 problem = check_public_url(media_url(brand, m))
                 if problem:
                     issues.append(f"{post.id}: {problem}")
     for msg in issues:
         print(f"problem: {msg}")
-    print(f"{len(posts)} posts checked, {len(issues)} problem(s)")
+    print(f"{len(posts)} posts checked, {len(issues)} problem(s), {len(awaiting)} awaiting images")
     return 1 if issues else 0
 
 
@@ -173,6 +190,64 @@ def cmd_render(args, brand, posts, state) -> int:
     return 0
 
 
+def _schedule(brand, posts, state) -> list[tuple]:
+    """Unpublished posts paired with the day each is expected to go out."""
+    tz = ZoneInfo(brand.timezone)
+    today = datetime.now(tz).date()
+    day = today + timedelta(days=1) if state.published_on(today, tz) else today
+    planned = []
+    for post in posts:
+        if state.started(post.id):
+            continue
+        if post.not_before and post.not_before > day:
+            day = post.not_before
+        planned.append((post, day))
+        day += timedelta(days=1)
+    return planned
+
+
+def cmd_prepare(args, brand, posts, state) -> int:
+    batch = _schedule(brand, posts, state)[: args.days]
+    rendered = []
+    for post, day in batch:
+        written = render.render_post(brand, post, brand.card_style, force=args.force) if post.card else []
+        if written:
+            rendered.append({"id": post.id, "day": day.isoformat()})
+            print(f"rendered {post.id} for {day:%a %d %b}")
+        missing = runner.missing_media(brand, post)
+        if missing:
+            print(f"warning: {post.id} still has no image for {', '.join(missing)} (no card to render it from)")
+    args.manifest.parent.mkdir(parents=True, exist_ok=True)
+    args.manifest.write_text(json.dumps({"brand": brand.slug, "posts": rendered}, indent=2) + "\n", encoding="utf-8")
+    print(f"{len(rendered)} post(s) prepared")
+    return 0
+
+
+def cmd_preview(args, brand, posts, state) -> int:
+    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    by_id = {p.id: p for p in posts}
+    root = f"https://raw.githubusercontent.com/{args.repo}/{args.ref}/brands/{brand.slug}/"
+    out = [
+        f"Images and captions for the next {len(manifest['posts'])} {brand.name} posts.",
+        "",
+        "**Merging this pull request approves them.** Each goes out on its day at the usual time. "
+        "To change one, edit `posts.yaml` on this branch (the images re-render on the next prepare run), "
+        "or delete its image here to hold it back. Nothing is published until this is merged.",
+    ]
+    for item in manifest["posts"]:
+        post = by_id[item["id"]]
+        day = datetime.fromisoformat(item["day"])
+        imgs = " ".join(f'<img src="{root}{m}" width="260">' for m in post.media)
+        out += [
+            "", "---", f"### {day:%a %d %b} · `{post.id}`", "", imgs, "",
+            "<details><summary>Instagram caption</summary>", "", "```", compose.instagram_text(brand, post), "```", "</details>",
+            "",
+            "<details><summary>Facebook text</summary>", "", "```", compose.facebook_text(brand, post), "```", "</details>",
+        ]
+    print("\n".join(out))
+    return 0
+
+
 def cmd_setup_token() -> int:
     """Exchange a Graph API Explorer token for a long-lived Page token and print the IDs to store as secrets."""
     import getpass
@@ -217,4 +292,6 @@ COMMANDS = {
     "post": cmd_post,
     "check": cmd_check,
     "render": cmd_render,
+    "prepare": cmd_prepare,
+    "preview": cmd_preview,
 }

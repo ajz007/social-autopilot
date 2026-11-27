@@ -6,10 +6,10 @@ The first brand is [Shaadi Planner Pro](brands/shaadi-planner-pro/), with 30 day
 
 ## How it works
 
-1. `brands/<brand>/posts.yaml` holds the queue: caption, hashtags, link and images for each post.
-2. `python -m autopilot render` draws branded 1080×1350 JPEG cards from each post's `card` section with headless Chrome.
-3. The images are hosted at a public URL, because Meta downloads media from a link rather than accepting uploads. See [image hosting](docs/image-hosting.md).
-4. Every evening at 19:00 IST, the [Daily post](.github/workflows/daily-post.yml) workflow publishes the next post and commits `state/<brand>.json`, the record of what went out.
+1. `brands/<brand>/posts.yaml` is the content plan: caption, hashtags, link and card design for each day. Card designs can sit on illustrated shaadi scenes (`lights`, `toran`, `diyas`, `mehendi`, `kolam`, `dhol`), drawn in code like the invitation templates.
+2. **Every Sunday**, the [Prepare week](.github/workflows/prepare-week.yml) workflow draws the next 7 days of images with headless Chrome and opens a pull request that shows each image and caption.
+3. **Merging that pull request approves the week.** Images are served from this public repository, because Meta downloads media from a link rather than accepting uploads.
+4. **Every evening at 19:00 IST**, the [Daily post](.github/workflows/daily-post.yml) workflow publishes the next post and commits `state/<brand>.json`, the record of what went out. If that day's images haven't been merged yet, nothing is posted and the run fails, so you get GitHub's failure email as a reminder.
 
 Built-in safeguards:
 
@@ -28,6 +28,8 @@ python -m autopilot validate --brand shaadi-planner-pro [--check-urls]
 python -m autopilot status   --brand shaadi-planner-pro   # what's posted, what's next, days of content left
 python -m autopilot next     --brand shaadi-planner-pro   # preview the exact text for each platform
 python -m autopilot render   --brand shaadi-planner-pro [--post-id ID] [--force]
+python -m autopilot prepare  --brand shaadi-planner-pro [--days 7]       # the weekly batch
+python -m autopilot preview  --brand shaadi-planner-pro --ref <sha>     # pull request text for that batch
 python -m autopilot check    --brand shaadi-planner-pro   # verify token, Page, Instagram account and API quota
 python -m autopilot post     --brand shaadi-planner-pro [--live] [--post-id ID] [--platform instagram]
 python -m autopilot setup-token                            # get a never-expiring Page token, see docs/meta-setup.md
@@ -53,7 +55,9 @@ See the comment at the top of [posts.yaml](brands/shaadi-planner-pro/posts.yaml)
 | --- | --- | --- |
 | `tip` | Checklists and how-tos (the most-saved format) | `kicker`, `title`, `points` |
 | `image` | Products and screenshots | `kicker`, `title`, `body`, `image` (a file under the brand folder) |
-| `statement` | Questions, polls and relatable posts that get comments | `kicker`, `title`, `body`, `cta` |
+| `statement` | Quotes, questions, polls and relatable posts | `kicker`, `title`, `body`, `cta` |
+
+Any layout takes `scene: <name>` for an illustrated background, and `align: top|center` to place the text.
 
 Use `card: { slides: [ ... ] }` with several `media` paths to make a carousel. `status` warns when fewer than seven posts are left.
 

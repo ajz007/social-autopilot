@@ -53,10 +53,36 @@
   .layout-statement .body { font-size: 38px; max-width: 820px; }
   .layout-statement .cta { align-self: center; background: var(--accent-ink); color: var(--accent); }
   .layout-statement footer .brand { color: var(--accent-ink); }
+
+  /* scene backgrounds: illustrated shaadi art behind the text, with a fade for legibility */
+  .scene-bg { position: absolute; inset: 0; z-index: 0; }
+  .scene-bg svg { display: block; width: 100%; height: 100%; }
+  .has-scene > :not(.scene-bg) { position: relative; z-index: 1; }
+  .has-scene::before { z-index: 2; }
+  .scene-dark { background: #2a0a18; color: var(--accent-ink); }
+  .scene-dark .scene-bg::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(26,6,16,.72) 0%, rgba(26,6,16,.45) 48%, rgba(26,6,16,0) 66%, rgba(26,6,16,0) 82%, rgba(26,6,16,.85) 100%); }
+  .scene-dark h1, .scene-dark .body, .scene-dark li { text-shadow: 0 2px 24px rgba(0,0,0,.55); }
+  .scene-dark .kicker, .scene-dark footer .brand { color: #f6d58b; }
+  .scene-dark li .n { color: #f6d58b; }
+  .scene-dark .cta { background: var(--accent-ink); color: var(--accent); }
+  .scene-dark footer { color: var(--accent-ink); }
+  .scene-light { background: #f7e1c6; color: #3b1408; }
+  .scene-light .scene-bg::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(247,225,198,.85) 0%, rgba(247,225,198,.5) 50%, rgba(247,225,198,0) 66%, rgba(247,225,198,0) 82%, rgba(247,225,198,.92) 100%); }
+  .scene-light .kicker, .scene-light footer .brand { color: #7a2e0e; }
+  .scene-light .cta { background: #7a2e0e; color: #fff8e9; }
+  .has-scene .main { flex: 1; justify-content: flex-start; padding-top: 40px; }
+  .has-scene.align-center .main { justify-content: center; padding-top: 0; }
+  .has-scene.layout-image .main { flex: 0 0 auto; }
+  .has-scene.layout-statement h1 { font-size: 88px; }
+  .scene-toran .main { padding-left: 90px; padding-right: 90px; }
+  .scene-toran.layout-statement h1 { font-size: 80px; }
 </style>
 </head>
 <body>
-  <div class="card layout-{{layout}}">
+  <div class="card {{classes}}" data-scene="{{scene}}" data-seed="{{seed}}">
+    <div class="scene-bg"></div>
     <div class="main">
       <div class="kicker">{{kicker}}</div>
       <h1>{{title}}</h1>
@@ -67,7 +93,13 @@
     {{image}}
     <footer><span class="brand">{{brand}}</span><span class="domain">{{domain}}</span></footer>
   </div>
+<script>/*{{scenes_js}}*/</script>
 <script>
+  // Draw the scene, if the card has one.
+  const card = document.querySelector('.card')
+  if (card.dataset.scene && window.renderScene) {
+    card.querySelector('.scene-bg').innerHTML = renderScene(card.dataset.scene, Number(card.dataset.seed))
+  }
   // Scale screenshots up or down to fill the free space while keeping their shape.
   const img = document.querySelector('.shot img');
   if (img) {

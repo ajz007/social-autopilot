@@ -5,346 +5,423 @@
 #   caption      main text (Facebook gets the link appended, Instagram gets "Link in bio")
 #   hashtags     without '#'; Facebook uses the first 3, Instagram the first 12 (see brand.yaml)
 #   link         path on the site or a full URL; UTM tags are added automatically
-#   media        JPEG images (1-10, carousel if several) or one .mp4/.mov video
-#   card         how `python -m autopilot render` draws the image(s); use `slides:` for a carousel
+#   media        JPEG paths the card renders to (1-10, carousel if several), or one .mp4/.mov video
+#   card         the design; `slides:` makes a carousel. Layouts: tip, image, statement.
+#                `scene:` lights | toran | diyas | mehendi | kolam | dhol; `align:` top | center
 #   not_before   optional date; the post waits until then
 #   facebook / instagram: { caption: ... }   optional per-platform caption override
 #
-# Weekly rhythm: Mon tip · Tue product · Wed question · Thu tip · Fri invitation · Sat relatable · Sun checklist
+# Images are not stored ahead of time: the Sunday "Prepare week" workflow renders the
+# next 7 days and opens a pull request. Merging it approves that week.
+#
+# Weekly rhythm (2 of 7 posts mention the product):
+#   1 quote · 2 guess · 3 relatable question · 4 problem → fix carousel ·
+#   5 tradition / nostalgia · 6 useful tip · 7 product showcase
 
-- id: 01-guest-list-households
+# ---------------------------------------------------------------- week 1
+
+- id: w1-quote-two-families
   caption: |
-    The guest list mistake almost every family makes: counting people instead of households.
+    Two families. One celebration. And a thousand little things to remember 🪔
 
-    Invitations, RSVPs, follow-up calls and rooms all happen per family, not per person. Start your list with one row per household, then add the people in it.
+    Here's to every family planning a shaadi this season: the lists, the calls, the late-night chai and the joy at the end of it all.
 
-    Save this for when the "final list" conversation starts at home 😅
-  hashtags: &core [IndianWedding, ShaadiPlanning, WeddingPlanning, DesiWedding, ShaadiSeason, WeddingTips, IndianBride, BigFatIndianWedding, WeddingPlanner, ShaadiDiaries, BrideToBe, WeddingIndia]
-  link: /
-  media: images/01-guest-list-households.jpg
-  card:
-    layout: tip
-    kicker: Guest list tip
-    title: Count households, not heads.
-    points:
-      - One row per family you invite
-      - Add each person under their household
-      - Track RSVP and follow-up per household
-      - Headcount adds itself up from there
-
-- id: 02-planner-dashboard
-  caption: |
-    Budget, guests, vendors, rooms, transport, family tasks and the timeline, on one dashboard.
-
-    Shaadi Planner Pro is built around how Indian families actually plan a wedding: lots of people, lots of functions, and everyone asking "what's pending?"
-
-    Explore the sample wedding to see how it works, no sign-up needed.
-  hashtags: *core
-  link: /#demo
-  media: images/02-planner-dashboard.jpg
-  card:
-    layout: image
-    kicker: Shaadi Planner Pro
-    title: Your whole shaadi on one screen.
-    image: sources/planner-dashboard.webp
-
-- id: 03-question-hardest-part
-  caption: |
-    Be honest 👇 What's been the hardest part of planning so far?
-
-    1️⃣ The guest list
-    2️⃣ The budget
-    3️⃣ Getting the family to agree
-    4️⃣ Vendors
-
-    Reply with a number. We read every comment and turn the most common answers into tips.
-  hashtags: *core
-  media: images/03-question-hardest-part.jpg
+    Who's getting married in your family this year? 💛
+  hashtags: &core [IndianWedding, ShaadiSeason, DesiWedding, ShaadiPlanning, WeddingPlanning, IndianBride, BigFatIndianWedding, ShaadiDiaries, BrideToBe, WeddingVibes, WeddingIndia, ShubhVivah]
+  media: images/w1-quote-two-families.jpg
   card:
     layout: statement
-    kicker: Tell us
-    title: What's the hardest part of planning?
-    body: "1 Guest list · 2 Budget · 3 Family · 4 Vendors"
-    cta: Reply with a number
+    scene: diyas
+    kicker: Shubh Vivah
+    title: "Two families.\nOne celebration."
+    body: And a thousand little things to remember.
 
-- id: 04-rsvp-follow-up
+- id: w1-guess-dhol
   caption: |
-    RSVPs don't come back on their own. Here's a follow-up rhythm that works without annoying anyone:
+    Guess in the comments 🥁
 
-    • 3 weeks out: send the invitation with a clear reply-by date
-    • 10 days before the reply-by date: a friendly reminder on WhatsApp
-    • 2 days after it: a phone call from someone the family knows
-    • Track who's confirmed per household so nobody gets called twice
+    Which function would feel incomplete without the dhol?
 
-    Tag the cousin who'll be making those calls 📞
-  hashtags: &rsvp [RSVP, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, DesiWedding, ShaadiSeason, WeddingGuests, IndianBride, BigFatIndianWedding, WeddingPlanner, BrideToBe]
-  link: /
-  media: images/04-rsvp-follow-up.jpg
+    Wrong answers only are also welcome 😄
+  hashtags: &functions [Dhol, Sangeet, Baraat, IndianWedding, ShaadiSeason, DesiWedding, WeddingFunctions, BigFatIndianWedding, ShaadiVibes, WeddingDance, IndianBride, WeddingVibes]
+  media: images/w1-guess-dhol.jpg
+  card:
+    layout: statement
+    scene: dhol
+    kicker: Guess in the comments
+    title: Which function is incomplete without this?
+    cta: Comment your answer 🥁
+
+- id: w1-question-haldi
+  caption: |
+    Every family has that one person who takes over the haldi 💛
+
+    Bowls in hand, instructions for everyone, and somehow they get the most haldi on the groom.
+
+    Tag the haldi boss in your family 👇
+  hashtags: &haldi [Haldi, HaldiCeremony, IndianWedding, ShaadiSeason, DesiWedding, WeddingFunctions, BigFatIndianWedding, ShaadiVibes, IndianBride, BrideToBe, WeddingVibes, DesiHumour]
+  media: images/w1-question-haldi.jpg
+  card:
+    layout: statement
+    scene: toran
+    align: center
+    kicker: Every family has one
+    title: Who takes over the haldi?
+    cta: Tag them 👇
+
+- id: w1-story-guest-list
+  caption: |
+    "Beta, send me the final guest list."
+
+    Which one? Papa's on WhatsApp, Mummy's in the notebook, or your Excel, version 7? 😅
+
+    In Shaadi Planner Pro the whole family works from one guest list: every household, every RSVP, and who still needs a call. Swipe to see how →
+
+    Try the sample wedding, no sign-up needed. Link in bio.
+  hashtags: &guests [GuestList, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingGuests, DesiWedding, ShaadiSeason, WeddingTips, BrideToBe, WeddingPlanner, BigFatIndianWedding, IndianBride]
+  link: /#demo
+  media: [images/w1-story-guest-list-1.jpg, images/w1-story-guest-list-2.jpg, images/w1-story-guest-list-3.jpg, images/w1-story-guest-list-4.jpg]
+  card:
+    slides:
+      - layout: statement
+        scene: lights
+        align: center
+        kicker: Every shaadi ever
+        title: '"Beta, send me the final guest list."'
+        body: Which one? There are four. →
+      - layout: tip
+        scene: lights
+        kicker: Sound familiar?
+        title: Four lists. Zero answers.
+        points:
+          - Papa's list on WhatsApp
+          - Mummy's list in a notebook
+          - Your Excel, version 7
+          - Nobody knows who has confirmed
+      - layout: image
+        scene: lights
+        kicker: The fix
+        title: One guest list the whole family shares.
+        body: Every household, every RSVP, who still needs a call.
+        image: sources/planner-dashboard.webp
+      - layout: statement
+        scene: toran
+        align: center
+        kicker: Shaadi Planner Pro
+        title: "Plan together.\nCelebrate together."
+        cta: See the sample wedding · link in bio
+
+- id: w1-blank-shaadi-without
+  caption: |
+    Fill in the blank 👇
+
+    "A shaadi without ______ is not a shaadi."
+
+    Dhol? Biryani? A dramatic phuphaji? Tell us what your family can't do without.
+  hashtags: *core
+  media: images/w1-blank-shaadi-without.jpg
+  card:
+    layout: statement
+    scene: kolam
+    kicker: Fill in the blank
+    title: "A shaadi without ______\nis not a shaadi."
+    cta: Your answer below 👇
+
+- id: w1-tip-emergency-bag
+  caption: |
+    Save this for the big day 📌 The wedding-day emergency bag:
+
+    ✔️ Safety pins and a mini sewing kit
+    ✔️ Phone chargers and a power bank
+    ✔️ Basic medicines and plasters
+    ✔️ Envelopes for shagun and tips
+    ✔️ Snacks and water for the couple
+
+    Hand it to your most responsible cousin. What would you add?
+  hashtags: &checklist [WeddingChecklist, WeddingTips, IndianWedding, WeddingPlanning, ShaadiPlanning, ShaadiSeason, DesiWedding, BrideToBe, IndianBride, WeddingDay, WeddingPlanner, BigFatIndianWedding]
+  media: images/w1-tip-emergency-bag.jpg
   card:
     layout: tip
-    kicker: RSVP tip
-    title: The no-awkwardness RSVP follow-up.
+    scene: lights
+    kicker: Save for the big day
+    title: The wedding-day emergency bag.
     points:
-      - "3 weeks out: invite with a reply-by date"
-      - "10 days before it: a WhatsApp reminder"
-      - "2 days after it: a call from family"
-      - Track replies per household
+      - Safety pins and a sewing kit
+      - Chargers and a power bank
+      - Medicines and plasters
+      - Envelopes for shagun and tips
+      - Snacks and water for the couple
 
-- id: 05-invitation-marigold-mandap
+- id: w1-showcase-marigold-mandap
   caption: |
-    Doors open, marigolds everywhere, diyas glowing at the bottom 🪔
+    Doors open, marigolds everywhere, diyas glowing at the threshold 🪔
 
-    This is Marigold Mandap, one of the digital invitation designs in Shaadi Planner Pro. Each guest family gets a personal greeting, the functions they're invited to, and RSVP inside the invitation itself.
+    This is Marigold Mandap, a digital invitation from Shaadi Planner Pro. Each family sees their own name, the functions they're invited to, and can reply right inside it.
 
-    Which function would you send this for?
+    Would you send this to your family? 👇
   hashtags: &invite [DigitalInvitation, WeddingInvitation, EInvite, WeddingCard, IndianWedding, ShaadiCard, DesiWedding, InvitationDesign, ShaadiSeason, IndianWeddingInvitation, WeddingPlanning, BigFatIndianWedding]
   link: /shop/wedding-pass
-  media: images/05-invitation-marigold-mandap.jpg
+  media: images/w1-showcase-marigold-mandap.jpg
   card:
     layout: image
+    scene: lights
     kicker: Digital invitation
-    title: Marigold Mandap
-    body: A personal greeting for every family, and RSVP built in.
+    title: Would you send this to your family?
+    body: Marigold Mandap · a personal greeting and RSVP for every family.
     image: sources/invite-marigold-mandap.png
 
-- id: 06-relatable-whatsapp-groups
+# ---------------------------------------------------------------- week 2
+
+- id: w2-quote-mehendi
   caption: |
-    The wedding hasn't started and there are already 7 WhatsApp groups:
+    "The darker the mehendi, the deeper the love." 🤎
 
-    "Family Only"
-    "Family Only (Real)"
-    "Ladies Sangeet Practice"
-    "Transport 🚗"
-    "Mehendi Plan"
-    "Don't Add Mama"
-    "Final Final List"
+    Every family has heard it. Most brides have checked their colour the next morning just in case 👀
 
-    Which one are you in? 😂
-  hashtags: *core
-  media: images/06-relatable-whatsapp-groups.jpg
+    Do you believe it? Yes or no below.
+  hashtags: &mehendi [Mehendi, MehendiNight, BridalMehendi, IndianWedding, ShaadiSeason, DesiWedding, WeddingFunctions, BigFatIndianWedding, IndianBride, BrideToBe, WeddingVibes, MehndiDesign]
+  media: images/w2-quote-mehendi.jpg
   card:
     layout: statement
-    kicker: Every shaadi ever
-    title: "7 WhatsApp groups.\nZero final decisions."
-    cta: Which one are you in?
+    scene: mehendi
+    kicker: Old saying
+    title: "The darker the mehendi,\nthe deeper the love."
+    cta: Do you believe it? 👀
 
-- id: 07-checklist-twelve-months
+- id: w2-guess-ritual
   caption: |
-    Save this 📌 The big decisions to lock in first, roughly 9–12 months before the wedding:
+    Guess the ritual 🔥
 
-    ✔️ Budget and who's contributing
-    ✔️ Dates (and backup dates) with the pandit/family
-    ✔️ Venue for the main functions
-    ✔️ Rough guest count per side
-    ✔️ Photographer, they book out early
-    ✔️ Caterer shortlist
+    Fire, seven rounds and a promise for a lifetime. What's it called in your family?
 
-    Everything else gets easier once these six are done.
-  hashtags: &checklist [WeddingChecklist, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, ShaadiSeason, DesiWedding, BrideToBe, IndianBride, EngagedLife, WeddingPlanner, BigFatIndianWedding]
-  link: /shop/essentials
-  media: images/07-checklist-twelve-months.jpg
-  card:
-    layout: tip
-    kicker: Save for later
-    title: Lock these in first.
-    points:
-      - Budget and who's contributing
-      - Dates, plus backup dates
-      - Venue for the main functions
-      - Rough guest count per side
-      - Photographer and caterer
-
-- id: 08-budget-buffer
-  caption: |
-    The one budget line every Indian wedding needs and almost nobody adds: a 10–15% buffer.
-
-    Extra guests turn up, the decor quote changes, someone needs one more outfit. If the buffer isn't in the plan, it comes out of something you cared about.
-
-    Track planned vs. actually paid for every vendor, so you always know what's really left.
-  hashtags: &budget [WeddingBudget, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, MoneyTips, DesiWedding, ShaadiSeason, BrideToBe, WeddingPlanner, BigFatIndianWedding, IndianBride]
-  link: /shop/essentials
-  media: images/08-budget-buffer.jpg
-  card:
-    layout: tip
-    kicker: Budget tip
-    title: Add a 10–15% buffer. Always.
-    points:
-      - Extra guests always appear
-      - Quotes change after you book
-      - Track planned vs. actually paid
-      - Know what's truly left each week
-
-- id: 09-excel-essentials
-  caption: |
-    Prefer planning in Excel? Shaadi Planner Pro Essentials is a ready-made workbook for Indian weddings: budget, guests, vendors, family tasks and a dashboard that shows what needs attention today.
-
-    It also comes with the Quick Start guide and a 14-day checklist PDF.
-  hashtags: &excel [WeddingPlanner, ExcelTemplate, IndianWedding, WeddingBudget, WeddingPlanning, ShaadiPlanning, WeddingChecklist, DesiWedding, ShaadiSeason, BrideToBe, WeddingOrganizer, IndianBride]
-  link: /shop/essentials
-  media: images/09-excel-essentials.jpg
-  card:
-    layout: image
-    kicker: Excel workbook
-    title: Shaadi Planner Pro Essentials
-    image: sources/essentials.webp
-
-- id: 10-question-guest-count
-  caption: |
-    Quick poll 👇 How many guests are you expecting at the main function?
-
-    A) Under 150
-    B) 150–300
-    C) 300–600
-    D) We stopped counting 😅
-
-    Drop your letter in the comments.
-  hashtags: *core
-  media: images/10-question-guest-count.jpg
+    Pheras, saat phere, saptapadi, mangal phere… tell us in the comments 👇
+  hashtags: &rituals [SaatPhere, Pheras, IndianWedding, HinduWedding, ShaadiSeason, DesiWedding, WeddingRituals, BigFatIndianWedding, IndianBride, ShubhVivah, WeddingVibes, BrideToBe]
+  media: images/w2-guess-ritual.jpg
   card:
     layout: statement
-    kicker: Quick poll
-    title: How many guests at the main function?
-    body: "A under 150 · B 150–300 · C 300–600 · D we stopped counting"
-    cta: Comment your letter
+    scene: diyas
+    kicker: Guess the ritual
+    title: "Fire. Seven rounds.\nA lifetime."
+    cta: What do you call it? 👇
 
-- id: 11-family-tasks
+- id: w2-question-dance-floor
   caption: |
-    "I thought you were handling it!" is how things get missed at weddings.
+    The DJ plays the first song and one person is already on the dance floor 💃
 
-    Give every task one owner (a name, not "the family"), a due date and a status. Then everyone can see what's pending without calling you.
+    It's always the same person, every shaadi. Who is it in your family?
 
-    Who's the most reliable task-finisher in your family? Tag them 👇
-  hashtags: *core
-  link: /
-  media: images/11-family-tasks.jpg
+    Tag them 👇
+  hashtags: &sangeet [Sangeet, SangeetNight, WeddingDance, IndianWedding, ShaadiSeason, DesiWedding, BigFatIndianWedding, ShaadiVibes, WeddingFun, IndianBride, BrideToBe, DesiHumour]
+  media: images/w2-question-dance-floor.jpg
+  card:
+    layout: statement
+    scene: dhol
+    kicker: Every family has one
+    title: Who's first on the dance floor?
+    cta: Tag them 💃
+
+- id: w2-story-rsvp
+  caption: |
+    "Are they coming or not?" Asked forty times a day, two weeks before the wedding 😮‍💨
+
+    RSVPs go missing when invites go out from five phones, nobody sets a reply-by date, and follow-ups depend on who remembers.
+
+    The fix: one guest list that shows who still needs a nudge, and ready-to-send WhatsApp messages that make the nudge easy. Swipe →
+  hashtags: &rsvp [RSVP, WeddingGuests, IndianWedding, WeddingPlanning, ShaadiPlanning, DesiWedding, ShaadiSeason, WeddingTips, BrideToBe, WeddingPlanner, BigFatIndianWedding, IndianBride]
+  link: /shop
+  media: [images/w2-story-rsvp-1.jpg, images/w2-story-rsvp-2.jpg, images/w2-story-rsvp-3.jpg, images/w2-story-rsvp-4.jpg]
+  card:
+    slides:
+      - layout: statement
+        scene: lights
+        align: center
+        kicker: Two weeks before the wedding
+        title: '"Are they coming or not?"'
+        body: Asked forty times a day. →
+      - layout: tip
+        scene: lights
+        kicker: Why RSVPs go missing
+        title: Nobody owns the follow-up.
+        points:
+          - Invites went out from five phones
+          - No reply-by date
+          - '"We''ll try to come" counts as a yes?'
+          - Follow-ups depend on who remembers
+      - layout: image
+        scene: lights
+        kicker: The fix
+        title: Nudges that don't feel awkward.
+        body: Ready-to-send WhatsApp RSVP messages for every situation.
+        image: sources/message-pack.webp
+        cover:  # hide the price badge
+          - {left: 85.5, top: 3, width: 14, height: 25, shape: circle, label: "35\nmessages", size: 21}
+      - layout: statement
+        scene: toran
+        align: center
+        kicker: Shaadi Planner Pro
+        title: Know who's coming before the caterer asks.
+        cta: Link in bio
+
+- id: w2-tradition-toran
+  caption: |
+    Mango leaves and marigolds over the door, and suddenly the whole house feels like a shaadi 🌼
+
+    Who ties the toran in your family? Is it still done by hand?
+  hashtags: &tradition [Toran, Marigold, IndianWedding, ShaadiSeason, DesiWedding, IndianTraditions, WeddingDecor, BigFatIndianWedding, ShaadiVibes, IndianBride, WeddingVibes, ShubhVivah]
+  media: images/w2-tradition-toran.jpg
+  card:
+    layout: statement
+    scene: toran
+    align: center
+    kicker: Tradition
+    title: "The toran goes up.\nThe shaadi begins."
+    cta: Who ties it in your family?
+
+- id: w2-tip-rooms
+  caption: |
+    Room allocation is a family-politics puzzle 🧩 A few rules that keep the peace:
+
+    • Elders get the ground floor or lift access, always
+    • Keep each household together
+    • Put families with small kids near each other
+    • Hold 1–2 rooms for last-minute arrivals
+    • Share the final list with the hotel AND the family
+
+    Save it for when the room list starts 📌
+  hashtags: &logistics [WeddingLogistics, DestinationWedding, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, DesiWedding, ShaadiSeason, WeddingGuests, WeddingPlanner, BigFatIndianWedding, BrideToBe]
+  media: images/w2-tip-rooms.jpg
   card:
     layout: tip
-    kicker: Family coordination
-    title: One task, one owner.
+    scene: lights
+    kicker: Guest stay
+    title: Room allocation, without the drama.
     points:
-      - A name, never "the family"
-      - A due date for every task
-      - A status anyone can check
-      - Review the overdue list together weekly
+      - Elders near the lift or ground floor
+      - Keep each household together
+      - Families with kids side by side
+      - Hold 1–2 rooms for surprises
 
-- id: 12-invitation-blush-envelope
+- id: w2-showcase-blush-envelope
   caption: |
     An envelope that opens, a card that slides out, and a little sparkle 💌
 
-    This is Blush Envelope, a digital invitation design in Shaadi Planner Pro. Guests see their own family's name, the functions they're invited to, the venue map and the dress code, and they can RSVP right there.
+    Blush Envelope is a digital invitation from Shaadi Planner Pro. Guests see their family's name, the functions they're invited to, the venue and dress code, and reply right there.
+
+    Envelope style or temple doors (last week's Marigold Mandap)? Which would you pick?
   hashtags: *invite
   link: /shop/wedding-pass
-  media: images/12-invitation-blush-envelope.jpg
+  media: images/w2-showcase-blush-envelope.jpg
   card:
     layout: image
+    scene: lights
     kicker: Digital invitation
-    title: Blush Envelope
-    body: Opens like a real envelope, on every phone.
+    title: An invitation that opens like an envelope.
+    body: Blush Envelope · made for every phone.
     image: sources/invite-blush-envelope.png
 
-- id: 13-relatable-relatives
+# ---------------------------------------------------------------- week 3
+
+- id: w3-quote-chai
   caption: |
-    Every wedding has these relatives. Which one is yours?
+    A shaadi isn't one day. It's months of love, lists and a lot of chai ☕
 
-    🕵️ The one who asks the budget
-    📋 The one who becomes the event manager
-    🍽️ The one who only cares about the menu
-    💃 The one who's been practising since the engagement
-
-    Tag them (if you dare) 😄
+    To everyone in the planning months right now: you're doing great. Which month are you in?
   hashtags: *core
-  media: images/13-relatable-relatives.jpg
+  media: images/w3-quote-chai.jpg
   card:
     layout: statement
-    kicker: Every shaadi ever
-    title: Which relative are you?
-    body: The budget detective · The event manager · The menu critic · The sangeet star
-    cta: Tag them 👇
+    scene: lights
+    align: center
+    kicker: Shaadi season
+    title: "Months of love,\nlists and chai."
+    body: A shaadi is never just one day.
 
-- id: 14-checklist-final-month
+- id: w3-guess-hidden-name
   caption: |
-    The last month checklist 📌 Save it now, thank yourself later.
+    Mehendi secret 👀
 
-    ✔️ Final headcount to the caterer
-    ✔️ Room list to the hotel
-    ✔️ Pickup plan for arriving guests
-    ✔️ Vendor payment schedule and who pays on the day
-    ✔️ A run sheet for each function, shared with everyone involved
-    ✔️ One emergency kit (safety pins, chargers, medicines)
-  hashtags: *checklist
+    In many families the groom's name or initials are hidden somewhere in the bride's mehendi, and he has to find them.
+
+    Did yours get found? How long did it take? 😄
+  hashtags: *mehendi
+  media: images/w3-guess-hidden-name.jpg
+  card:
+    layout: statement
+    scene: mehendi
+    kicker: Mehendi tradition
+    title: Where did the bride hide his name?
+    cta: Did he find it? 👀
+
+- id: w3-question-runs-out
+  caption: |
+    One thing every Indian wedding runs out of. Go 👇
+
+    Chairs? Ice? Time? Patience? 😅
+  hashtags: &humour [IndianWedding, DesiHumour, WeddingMemes, ShaadiSeason, DesiWedding, BigFatIndianWedding, ShaadiVibes, WeddingFun, IndianBride, BrideToBe, ShaadiDiaries, WeddingVibes]
+  media: images/w3-question-runs-out.jpg
+  card:
+    layout: statement
+    scene: lights
+    align: center
+    kicker: Be honest
+    title: What does every shaadi run out of?
+    cta: Comment below 👇
+
+- id: w3-story-budget
+  caption: |
+    The budget was final. Then the decorator called 📞
+
+    Budgets don't break all at once. They leak: extra guests nobody counted, quotes that change after booking, cash paid on the day that nobody writes down.
+
+    Track planned vs. actually paid for every vendor, and keep a 10–15% buffer. Swipe to see how →
+  hashtags: &budget [WeddingBudget, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, MoneyTips, DesiWedding, ShaadiSeason, BrideToBe, WeddingPlanner, BigFatIndianWedding, IndianBride]
   link: /shop/essentials
-  media: images/14-checklist-final-month.jpg
+  media: [images/w3-story-budget-1.jpg, images/w3-story-budget-2.jpg, images/w3-story-budget-3.jpg, images/w3-story-budget-4.jpg]
   card:
-    layout: tip
-    kicker: Last month checklist
-    title: 30 days to go.
-    points:
-      - Final headcount to the caterer
-      - Room list to the hotel
-      - Pickup plan for arriving guests
-      - Who pays which vendor on the day
-      - A run sheet for every function
+    slides:
+      - layout: statement
+        scene: diyas
+        kicker: Every shaadi ever
+        title: "The budget was final.\nThen the decorator called."
+      - layout: tip
+        scene: lights
+        kicker: Where budgets leak
+        title: It's never one big expense.
+        points:
+          - Extra guests nobody counted
+          - Quotes that change after booking
+          - Cash paid on the day, never written down
+          - No buffer for surprises
+      - layout: image
+        scene: lights
+        kicker: The fix
+        title: Planned vs. paid, for every vendor.
+        body: See what's really left before the next payment is due.
+        image: sources/essentials.webp
+      - layout: statement
+        scene: toran
+        align: center
+        kicker: Shaadi Planner Pro
+        title: Spend on moments, not surprises.
+        cta: Link in bio
 
-- id: 15-guest-pickups
+- id: w3-nostalgia-baraat
   caption: |
-    Out-of-town guests arriving at 3 different stations on 2 different days? Plan pickups like this:
+    The baraat was supposed to leave at 7. It's 9:30 and someone is still looking for the safa 😂
 
-    1. Collect arrival time, place and number of people per household
-    2. Group arrivals within the same 1–2 hour window
-    3. Assign a car and a driver contact to each group
-    4. Send each family their driver's number the night before
-
-    Nobody stranded, nobody calling the groom at 6am.
-  hashtags: &logistics [WeddingLogistics, DestinationWedding, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, DesiWedding, ShaadiSeason, WeddingGuests, WeddingPlanner, BigFatIndianWedding, BrideToBe]
-  link: /
-  media: images/15-guest-pickups.jpg
-  card:
-    layout: tip
-    kicker: Guest logistics
-    title: A pickup plan nobody gets lost in.
-    points:
-      - Arrival time, place, people per family
-      - Group arrivals by 1–2 hour windows
-      - A car and driver for each group
-      - Share driver numbers the night before
-
-- id: 16-message-pack
-  caption: |
-    "What do I even write to the caterer?" 🤔
-
-    The WhatsApp & Vendor Message Pack has ready-to-send templates for vendor enquiries, negotiations, confirmations and guest RSVP reminders. Copy, fill in your details, send.
-  hashtags: &vendor [WeddingVendors, WhatsAppTemplates, IndianWedding, WeddingPlanning, ShaadiPlanning, WeddingTips, DesiWedding, ShaadiSeason, WeddingBudget, BrideToBe, WeddingPlanner, IndianBride]
-  link: /shop
-  media: images/16-message-pack.jpg
-  card:
-    layout: image
-    kicker: Message pack
-    title: Ready-to-send vendor and RSVP messages.
-    image: sources/message-pack.webp
-    cover:  # hide the price badge
-      - {left: 85.5, top: 3, width: 14, height: 25, shape: circle, label: "35\nmessages", size: 21}
-
-- id: 17-question-mehendi-or-sangeet
-  caption: |
-    The big debate 👇 Which function is the most fun?
-
-    💚 Mehendi
-    💛 Haldi
-    💃 Sangeet
-    🎉 Reception
-
-    Vote in the comments and tell us why!
-  hashtags: &functions [Mehendi, Haldi, Sangeet, IndianWedding, ShaadiSeason, DesiWedding, WeddingFunctions, ShaadiPlanning, BigFatIndianWedding, IndianBride, WeddingVibes, BrideToBe]
-  media: images/17-question-mehendi-or-sangeet.jpg
+    Baraat on time: myth or legend? Tell us your family's record 👇
+  hashtags: &baraat [Baraat, IndianWedding, DesiHumour, ShaadiSeason, DesiWedding, BigFatIndianWedding, WeddingDance, ShaadiVibes, Dhol, IndianGroom, WeddingFun, WeddingVibes]
+  media: images/w3-nostalgia-baraat.jpg
   card:
     layout: statement
-    kicker: The big debate
-    title: Mehendi, Haldi, Sangeet or Reception?
-    cta: Vote in the comments
+    scene: dhol
+    kicker: Be honest
+    title: "Baraat on time:\nmyth or legend?"
+    cta: Your family's record 👇
 
-- id: 18-vendor-negotiation
+- id: w3-tip-vendors
   caption: |
-    Before you sign with any vendor, get these 5 things in writing:
+    Before you sign with any vendor, get these 5 things in writing ✍️
 
     1. Exact deliverables (hours, items, people)
     2. The payment schedule and what's refundable
@@ -352,12 +429,12 @@
     4. Extra charges: travel, overtime, taxes
     5. Who your contact is on the day
 
-    It's not rude, it's how good vendors like to work too.
-  hashtags: *vendor
-  link: /shop
-  media: images/18-vendor-negotiation.jpg
+    It isn't rude. Good vendors prefer it too. Save this 📌
+  hashtags: &vendor [WeddingVendors, WeddingTips, IndianWedding, WeddingPlanning, ShaadiPlanning, DesiWedding, ShaadiSeason, WeddingBudget, BrideToBe, WeddingPlanner, IndianBride, BigFatIndianWedding]
+  media: images/w3-tip-vendors.jpg
   card:
     layout: tip
+    scene: lights
     kicker: Vendor tip
     title: Get these 5 things in writing.
     points:
@@ -367,207 +444,195 @@
       - Travel, overtime, taxes
       - Your contact on the day
 
-- id: 19-invitation-rsvp-inside
-  caption: |
-    The best part of a digital invitation isn't the animation, it's that guests can reply right inside it ✅
-
-    With Shaadi Planner Pro, each family's RSVP goes straight into your guest list, so you know who's coming to which function without chasing anyone.
-  hashtags: *invite
-  link: /shop/wedding-pass
-  media: images/19-invitation-rsvp-inside.jpg
-  card:
-    layout: image
-    kicker: Digital invitation
-    title: RSVPs that land in your guest list.
-    image: sources/invite-marigold-mandap-details.png
-
-- id: 20-relatable-photographer
-  caption: |
-    Wedding photographer: "Just be natural."
-
-    Everyone: *stands in a perfectly straight line, hands folded, zero smiles* 📸
-
-    Share your most awkward family photo moment 👇
-  hashtags: &photo [WeddingPhotography, IndianWedding, DesiWedding, ShaadiSeason, WeddingMemes, BigFatIndianWedding, ShaadiVibes, IndianBride, CandidPhotography, WeddingFun, BrideToBe, DesiHumour]
-  media: images/20-relatable-photographer.jpg
-  card:
-    layout: statement
-    kicker: Every shaadi ever
-    title: '"Just be natural."'
-    body: "*entire family stands in a straight line*"
-
-- id: 21-checklist-wedding-day-bag
-  caption: |
-    The wedding-day emergency bag 🎒 Give it to one responsible cousin.
-
-    ✔️ Safety pins and a mini sewing kit
-    ✔️ Phone chargers and a power bank
-    ✔️ Basic medicines and plasters
-    ✔️ Envelopes for shagun and vendor tips
-    ✔️ Snacks and water for the couple
-    ✔️ A printed run sheet with vendor numbers
-  hashtags: *checklist
-  link: /
-  media: images/21-checklist-wedding-day-bag.jpg
-  card:
-    layout: tip
-    kicker: Save for the big day
-    title: The emergency bag.
-    points:
-      - Safety pins and a sewing kit
-      - Chargers and a power bank
-      - Medicines and plasters
-      - Envelopes for shagun and tips
-      - Snacks and water for the couple
-
-- id: 22-room-allocation
-  caption: |
-    Room allocation is a family-politics puzzle 🧩 A few rules that keep the peace:
-
-    • Elders get ground floor or lift access, always
-    • Keep each household together
-    • Put the families with small kids near each other
-    • Leave 1–2 rooms free for last-minute arrivals
-    • Share the final room list with the hotel AND the family
-  hashtags: *logistics
-  link: /
-  media: images/22-room-allocation.jpg
-  card:
-    layout: tip
-    kicker: Guest stay
-    title: Room allocation, without the drama.
-    points:
-      - Elders near the lift or ground floor
-      - Keep each household together
-      - Families with kids side by side
-      - Hold 1–2 rooms for surprises
-
-- id: 23-sangeet-host-kit
+- id: w3-showcase-sangeet-kit
   caption: |
     Someone just handed you the mic at the sangeet 🎤 Now what?
 
-    The Sangeet Host Kit has a ready-made Hinglish anchoring script, introductions for every performance, funny and emotional lines, rescue lines for awkward delays, and a DJ cue sheet. Just add the names and you're ready to host.
-  hashtags: &sangeet [Sangeet, SangeetNight, SangeetPerformance, IndianWedding, ShaadiSeason, DesiWedding, WeddingDance, BigFatIndianWedding, WeddingHost, ShaadiPlanning, BrideToBe, IndianBride]
+    The Sangeet Host Kit has a ready-made Hinglish anchoring script, introductions for every performance, funny and emotional lines, rescue lines for awkward delays, and a DJ cue sheet. Just add the names.
+
+    Who's hosting the sangeet in your family?
+  hashtags: *sangeet
   link: /shop/sangeet-host-kit
-  media: images/23-sangeet-host-kit.jpg
+  media: images/w3-showcase-sangeet-kit.jpg
   card:
     layout: image
+    scene: lights
     kicker: Sangeet Host Kit
     title: When someone hands you the mic.
     image: sources/sangeet-host-kit.webp
     cover:  # hide the "Starting at" price plaque
       - {left: 31, top: 75.5, width: 38.5, height: 12.5, label: "Ready-to-use scripts"}
 
-- id: 24-question-sangeet-song
-  caption: |
-    Which song HAS to be on the sangeet playlist? 🎶
+# ---------------------------------------------------------------- week 4
 
-    Drop yours below. We'll make a list of the most-requested songs and share it next week.
-  hashtags: *sangeet
-  media: images/24-question-sangeet-song.jpg
+- id: w4-quote-kolam
+  caption: |
+    Every kolam starts with one dot. Every shaadi starts with one list ✨
+
+    Wherever you are in the planning, start small and keep going.
+  hashtags: *core
+  media: images/w4-quote-kolam.jpg
   card:
     layout: statement
-    kicker: Your turn
-    title: One song that has to be at the sangeet?
-    cta: Drop it in the comments 🎶
+    scene: kolam
+    kicker: Begin
+    title: "Every kolam starts with one dot.\nEvery shaadi, with one list."
 
-- id: 25-run-sheet
+- id: w4-guess-function-emoji
   caption: |
-    A run sheet is what turns a crowded wedding day into a calm one.
+    Guess the function from the emojis 👇
 
-    For each function, list: time, what happens, who's responsible, and the vendor's phone number. Print it, share it on WhatsApp, and give it to whoever's managing the stage.
+    💛 🥣 😂 🏃
 
-    When something runs late (it will), everyone knows what moves.
+    Bonus points if you know why the last one is there 😄
+  hashtags: *haldi
+  media: images/w4-guess-function-emoji.jpg
+  card:
+    layout: statement
+    scene: lights
+    align: center
+    kicker: Guess the function
+    title: 💛 🥣 😂 🏃
+    cta: Answer in the comments
+
+- id: w4-question-who-dances-more
+  caption: |
+    The eternal debate 👇
+
+    Bride's side or groom's side: who dances more at the sangeet?
+
+    Pick a side. Defend it.
+  hashtags: *sangeet
+  media: images/w4-question-who-dances-more.jpg
+  card:
+    layout: statement
+    scene: toran
+    align: center
+    kicker: The eternal debate
+    title: "Bride's side or groom's side:\nwho dances more?"
+    cta: Pick a side 👇
+
+- id: w4-story-pickups
+  caption: |
+    "Who's picking up Bua ji from the station?" … silence in the family group 🚉
+
+    Three stations, two days, forty guests, and drivers who don't have anyone's number. That's how the groom ends up answering calls at 6am.
+
+    Plan every arrival, car and room in one place the whole family can see. Swipe →
+  hashtags: *logistics
+  link: /#demo
+  media: [images/w4-story-pickups-1.jpg, images/w4-story-pickups-2.jpg, images/w4-story-pickups-3.jpg, images/w4-story-pickups-4.jpg]
+  card:
+    slides:
+      - layout: statement
+        scene: lights
+        align: center
+        kicker: Every family group ever
+        title: '"Who''s picking up Bua ji from the station?"'
+        body: "*silence* →"
+      - layout: tip
+        scene: lights
+        kicker: Arrival day
+        title: The pickup scramble.
+        points:
+          - Three stations, two days
+          - Drivers without guest numbers
+          - Rooms decided on the spot
+          - The groom answering calls at 6am
+      - layout: image
+        scene: lights
+        kicker: The fix
+        title: Pickups and rooms, planned together.
+        body: Every arrival, car and room, shared with the family.
+        image: sources/planner-dashboard.webp
+      - layout: statement
+        scene: toran
+        align: center
+        kicker: Shaadi Planner Pro
+        title: "Nobody stranded.\nNobody calling the groom."
+        cta: See the sample wedding · link in bio
+
+- id: w4-nostalgia-chai
+  caption: |
+    The best part of every shaadi? 2am chai with the cousins after everyone else has gone to sleep ☕
+
+    Tag the cousins you'd be up with 👇
   hashtags: *core
-  link: /
-  media: images/25-run-sheet.jpg
+  media: images/w4-nostalgia-chai.jpg
+  card:
+    layout: statement
+    scene: diyas
+    kicker: Shaadi memories
+    title: "2am chai\nwith the cousins."
+    body: The best part of every shaadi.
+    cta: Tag them ☕
+
+- id: w4-tip-last-month
+  caption: |
+    One month to go? Save this 📌
+
+    ✔️ Final headcount to the caterer
+    ✔️ Room list to the hotel
+    ✔️ Pickup plan for arriving guests
+    ✔️ Who pays which vendor on the day
+    ✔️ A run sheet for every function, shared with everyone involved
+  hashtags: *checklist
+  media: images/w4-tip-last-month.jpg
   card:
     layout: tip
-    kicker: Wedding day tip
-    title: Make a run sheet for every function.
+    scene: lights
+    kicker: 30 days to go
+    title: The last-month checklist.
     points:
-      - Time
-      - What happens
-      - Who's responsible
-      - The vendor's phone number
+      - Final headcount to the caterer
+      - Room list to the hotel
+      - Pickup plan for arriving guests
+      - Who pays which vendor on the day
+      - A run sheet for every function
 
-- id: 26-invitation-blush-details
+- id: w4-showcase-rsvp-inside
   caption: |
-    Everything guests usually ask about, already in the invitation ✨
+    The best part of a digital invitation isn't the animation ✨ It's that guests can reply right inside it.
 
-    Venue with directions, dress code, the functions they're invited to, family contacts and Add to Calendar. Fewer "what time is the haldi?" messages for you.
+    With Shaadi Planner Pro each family's reply lands straight in your guest list, so you know who's coming to which function without chasing anyone.
   hashtags: *invite
   link: /shop/wedding-pass
-  media: images/26-invitation-blush-details.jpg
+  media: images/w4-showcase-rsvp-inside.jpg
   card:
     layout: image
+    scene: lights
     kicker: Digital invitation
-    title: Answers before they ask.
-    image: sources/invite-blush-envelope-details.png
+    title: Guests reply right inside the invitation.
+    image: sources/invite-marigold-mandap-details.png
 
-- id: 27-relatable-final-list
+# ---------------------------------------------------------------- week 5
+
+- id: w5-quote-heart
   caption: |
-    Guest list v1: 200 people.
-    Guest list v2: "Just a few more" 250.
-    Guest list v7_FINAL_final: 480. 🙃
+    Plan with lists. Celebrate with your heart 💛
 
-    What version is your list on?
+    Wishing every family planning a shaadi this season a beautiful, calm and joyful celebration.
   hashtags: *core
-  media: images/27-relatable-final-list.jpg
+  media: images/w5-quote-heart.jpg
   card:
     layout: statement
-    kicker: Every shaadi ever
-    title: "guest_list_v7\n_FINAL_final.xlsx"
-    body: "v1: 200 → v2: 250 → v7: 480"
-    cta: What version are you on?
+    scene: diyas
+    kicker: Shubh Vivah
+    title: "Plan with lists.\nCelebrate with your heart."
 
-- id: 28-checklist-week-before
+- id: w5-question-advice
   caption: |
-    One week to go 📌 Your checklist:
+    For everyone who's already married 💍
 
-    ✔️ Confirm every vendor's arrival time
-    ✔️ Final payments ready, with who hands over what
-    ✔️ Outfits tried, altered and packed per function
-    ✔️ Gifts and return gifts sorted by family
-    ✔️ Pickup plan sent to drivers and guests
-    ✔️ Sleep. Seriously.
-  hashtags: *checklist
-  link: /shop/essentials
-  media: images/28-checklist-week-before.jpg
-  card:
-    layout: tip
-    kicker: One week to go
-    title: The final week checklist.
-    points:
-      - Confirm every vendor's arrival time
-      - Final payments ready and assigned
-      - Outfits packed per function
-      - Return gifts sorted by family
-      - Pickup plan sent to drivers
-
-- id: 29-import-excel
-  caption: |
-    Already planning in Excel? You don't have to start over.
-
-    Bring your Shaadi Planner workbook into the online planner, share it with family, and export an updated copy whenever you need one.
-  hashtags: *excel
-  link: /#demo
-  media: images/29-import-excel.jpg
-  card:
-    layout: image
-    kicker: Online planner
-    title: Your Excel plan, online with the whole family.
-    image: sources/complete.webp
-
-- id: 30-question-advice
-  caption: |
-    For everyone who's already married 💍 What's ONE piece of advice you'd give a couple who just got engaged?
+    What's ONE piece of advice you'd give a couple who just got engaged?
 
     The best answers will become a post for our newly engaged followers.
   hashtags: *core
-  media: images/30-question-advice.jpg
+  media: images/w5-question-advice.jpg
   card:
     layout: statement
+    scene: toran
+    align: center
     kicker: Married folks, help!
     title: One piece of advice for newly engaged couples?
     cta: Share it below 💍

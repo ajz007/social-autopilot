@@ -9,7 +9,7 @@ utm_campaign: daily-social
 # Meta's servers download each image from this public address, so every file under
 # brands/shaadi-planner-pro/images/ must also be served here. images/01-guest-list.jpg
 # is fetched from <image_base_url>images/01-guest-list.jpg. See docs/image-hosting.md.
-image_base_url: https://shaadiplannerpro.com/social/
+image_base_url: https://raw.githubusercontent.com/ajz007/social-autopilot/main/brands/shaadi-planner-pro/
 
 # Names of the environment variables (GitHub Actions secrets) that hold credentials.
 env:

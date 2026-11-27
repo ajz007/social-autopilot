@@ -11,23 +11,33 @@ Meta renames screens from time to time. If a screen doesn't match, look for the 
 
 ## 2. Create a Meta app
 
-1. Sign in at [developers.facebook.com](https://developers.facebook.com/) with the Facebook account that manages the Page, and open **My Apps → Create App**.
-2. Choose the **Business** type (it may be listed under the "Other" use case). Name it something like "Shaadi Planner Pro Autopilot".
-3. In the app's settings, add a **Privacy Policy URL** (your site's privacy page) and set the **App Mode** to **Live**. Posts made by an app in Development mode can be hidden from the public.
+1. Sign in at [developers.facebook.com](https://developers.facebook.com/) with the Facebook account that manages the Page, and open **My Apps → Create App**. Name it something like "Shaadi Planner Pro Autopilot".
+2. On **Add use cases**, filter by **Content management** and tick:
+   - **Manage everything on your Page**
+   - **Manage messaging & content on Instagram**
+
+   Leave the ads, Marketing API and Threads options unticked.
+3. If it asks for a business portfolio, pick the one that owns your Page, or skip it. Either works for your own Page.
+4. In the app dashboard, open **Use cases**:
+   - Next to **Manage everything on your Page**, click **Customize** and **Add** `pages_manage_posts` and `pages_read_engagement`.
+   - Next to **Manage messaging & content on Instagram**, click **Customize**, choose **API setup with Facebook login** (not Instagram login), and **Add** `instagram_basic` and `instagram_content_publish`.
+5. In **App settings → Basic**, add a **Privacy Policy URL** (your site's privacy page). Then set the app to **Live**. Posts made by an app in Development mode can be hidden from the public.
 
 As the app's admin, posting to your own Page and Instagram account doesn't need Meta's App Review.
 
 ## 3. Get a token in Graph API Explorer
 
-1. Open [Graph API Explorer](https://developers.facebook.com/tools/explorer/) and select your app.
-2. Under **User or Page**, choose **Get User Access Token** and add these permissions:
+1. Open [Graph API Explorer](https://developers.facebook.com/tools/explorer/) and select your app under **Meta App**.
+2. In the **Permissions** dropdown, tick all six:
    - `pages_show_list`
    - `pages_read_engagement`
    - `pages_manage_posts`
    - `instagram_basic`
    - `instagram_content_publish`
    - `business_management`
-3. Click **Generate Access Token** and approve the Page and the Instagram account in the dialog.
+
+   If some are missing from the dropdown, they haven't been added to the app's use cases yet. Finish step 2.4, then refresh the Explorer.
+3. Click **Generate Access Token** and approve the Page and the Instagram account in the pop-up.
 
 ## 4. Exchange it for a token that doesn't expire
 

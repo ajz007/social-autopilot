@@ -41,7 +41,7 @@ python -m unittest discover -s tests
 
 1. Follow [Meta setup](docs/meta-setup.md) to get the Page ID, Instagram user ID and Page token.
 2. Add them as repository secrets: `SPP_FB_PAGE_ID`, `SPP_IG_USER_ID`, `SPP_FB_PAGE_TOKEN`.
-3. Host the images, then confirm with `python -m autopilot validate --brand shaadi-planner-pro --check-urls`.
+3. Push the rendered images (they're served from this public repository), then confirm with `python -m autopilot validate --brand shaadi-planner-pro --check-urls`.
 4. Under **Actions → Daily post → Run workflow**, run a dry run, then run once with **live** checked.
 5. Set the repository variable `AUTOPILOT_LIVE=true` to turn on the daily schedule.
 

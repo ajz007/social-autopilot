@@ -81,7 +81,11 @@ def card_html(brand: Brand, spec: dict, style: dict) -> str:
     )
     image = ""
     if spec.get("image"):
-        image = f'<div class="shot"><img src="{_data_uri(brand.root / spec["image"])}" alt=""></div>'
+        covers = "".join(_cover_html(c) for c in spec.get("cover") or [])
+        image = (
+            f'<div class="shot"><div class="frame"><img src="{_data_uri(brand.root / spec["image"])}" alt="">'
+            f"{covers}</div></div>"
+        )
 
     domain = brand.site_url.split("://", 1)[-1]
     replacements = {
@@ -103,6 +107,26 @@ def card_html(brand: Brand, spec: dict, style: dict) -> str:
     for key, value in replacements.items():
         page = page.replace(key, value)
     return page
+
+
+def _cover_html(cover: dict) -> str:
+    """Blur out part of a source image, such as a price badge.
+
+    Positions are percentages of the source image: {left, top, width, height}, plus
+    optional shape ("rect" or "circle"), a short label drawn on top and its font size in pixels.
+    """
+    try:
+        box = {k: float(cover[k]) for k in ("left", "top", "width", "height")}
+    except (KeyError, TypeError, ValueError):
+        raise ConfigError(f"cover needs numeric left, top, width and height percentages: {cover}") from None
+    radius = "50%" if cover.get("shape") == "circle" else "18px"
+    style = (
+        f"left:{box['left']}%;top:{box['top']}%;width:{box['width']}%;height:{box['height']}%;"
+        f"border-radius:{radius}"
+    )
+    label = html.escape(str(cover.get("label", ""))).replace("\n", "<br>")
+    size = f' style="font-size:{int(cover["size"])}px"' if cover.get("size") else ""
+    return f'<div class="cover" style="{style}"><span{size}>{label}</span></div>'
 
 
 def _data_uri(path: Path) -> str:

@@ -22,7 +22,14 @@
   .layout-tip .main, .layout-statement .main { flex: 1; justify-content: center; }
   .body:empty { display: none; }
   .shot { flex: 1; min-height: 0; margin-top: 56px; display: flex; justify-content: center; align-items: center; }
-  .shot img { display: block; border-radius: 24px; box-shadow: 0 30px 70px rgba(0,0,0,.3); }
+  .shot .frame { position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.3); }
+  .shot img { display: block; }
+  .cover { position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
+           backdrop-filter: blur(22px) saturate(1.1); -webkit-backdrop-filter: blur(22px) saturate(1.1);
+           background: rgba(255, 248, 233, .28); }
+  .cover span { font-family: '{{heading_font}}', Georgia, serif; font-weight: 700; color: var(--accent);
+                font-size: 30px; line-height: 1.1; padding: 0 10px; }
+  .cover span:empty { display: none; }
   .cta { display: inline-block; align-self: flex-start; margin-top: 40px; background: var(--accent); color: var(--accent-ink); font-size: 30px; font-weight: 600; padding: 20px 34px; border-radius: 999px; }
   .cta:empty { display: none; }
   footer { display: flex; justify-content: space-between; align-items: center; padding: 44px 0 80px; font-size: 28px; }
@@ -65,7 +72,7 @@
   const img = document.querySelector('.shot img');
   if (img) {
     const fit = () => {
-      const box = img.parentElement.getBoundingClientRect();
+      const box = img.closest('.shot').getBoundingClientRect();
       const scale = Math.min(box.width / img.naturalWidth, box.height / img.naturalHeight);
       img.style.width = Math.floor(img.naturalWidth * scale) + 'px';
       img.style.height = Math.floor(img.naturalHeight * scale) + 'px';

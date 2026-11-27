@@ -219,6 +219,27 @@ class CliTests(Base):
         self.assertFalse((self.root / "state" / "test.json").exists())
 
 
+class RenderTests(Base):
+    def test_cover_blurs_a_region_with_an_escaped_label(self):
+        from autopilot import render
+
+        src = self.brand.root / "sources" / "art.png"
+        src.parent.mkdir()
+        src.write_bytes(b"\x89PNG fake")
+        page = render.card_html(self.brand, {
+            "layout": "image", "title": "T", "image": "sources/art.png",
+            "cover": [{"left": 10, "top": 20, "width": 30, "height": 5, "shape": "circle", "label": "a<b\nc", "size": 20}],
+        }, {})
+        self.assertIn("left:10.0%;top:20.0%;width:30.0%;height:5.0%;border-radius:50%", page)
+        self.assertIn('<span style="font-size:20px">a&lt;b<br>c</span>', page)
+
+    def test_cover_requires_numeric_box(self):
+        from autopilot import render
+
+        with self.assertRaisesRegex(ConfigError, "cover needs"):
+            render._cover_html({"left": 1, "top": 2, "width": "wide"})
+
+
 class RealBrandTests(unittest.TestCase):
     def test_bundled_brands_load_and_fit_platform_limits(self):
         brands_dir = Path(__file__).resolve().parent.parent / "brands"

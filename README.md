@@ -9,7 +9,7 @@ The first brand is [Shaadi Planner Pro](brands/shaadi-planner-pro/), with 30 day
 1. `brands/<brand>/posts.yaml` is the content plan: caption, hashtags, link and card design for each day. Card designs can sit on illustrated shaadi scenes (`lights`, `toran`, `diyas`, `mehendi`, `kolam`, `dhol`), drawn in code like the invitation templates.
 2. **Every Sunday**, the [Prepare week](.github/workflows/prepare-week.yml) workflow draws the next 7 days of images with headless Chrome and opens a pull request that shows each image and caption.
 3. **Merging that pull request approves the week.** Images are served from this public repository, because Meta downloads media from a link rather than accepting uploads.
-4. **Every evening at 19:00 IST**, the [Daily post](.github/workflows/daily-post.yml) workflow publishes the next post and commits `state/<brand>.json`, the record of what went out. If that day's images haven't been merged yet, nothing is posted and the run fails, so you get GitHub's failure email as a reminder.
+4. **Every evening at 19:00 IST**, the [Daily post](.github/workflows/daily-post.yml) workflow publishes the next post and saves `state/<brand>.json`, the record of what went out, to the `autopilot-state` branch (so `main` can stay protected). If that day's images haven't been merged yet, nothing is posted and the run fails, so you get GitHub's failure email as a reminder.
 
 Built-in safeguards:
 
@@ -42,7 +42,7 @@ python -m unittest discover -s tests
 ## Going live
 
 1. Follow [Meta setup](docs/meta-setup.md) to get the Page ID, Instagram user ID and Page token.
-2. Add them as repository secrets: `SPP_FB_PAGE_ID`, `SPP_IG_USER_ID`, `SPP_FB_PAGE_TOKEN`.
+2. Add them as repository secrets: `FB_PAGE_ID`, `IG_USER_ID`, `FB_PAGE_TOKEN`.
 3. Push the rendered images (they're served from this public repository), then confirm with `python -m autopilot validate --brand shaadi-planner-pro --check-urls`.
 4. Under **Actions → Daily post → Run workflow**, run a dry run, then run once with **live** checked.
 5. Set the repository variable `AUTOPILOT_LIVE=true` to turn on the daily schedule.

@@ -57,9 +57,9 @@ In the GitHub repository, open **Settings → Secrets and variables → Actions 
 
 | Secret | Value |
 | --- | --- |
-| `SPP_FB_PAGE_ID` | Page ID |
-| `SPP_IG_USER_ID` | Instagram user ID |
-| `SPP_FB_PAGE_TOKEN` | Page token |
+| `FB_PAGE_ID` | Page ID |
+| `IG_USER_ID` | Instagram user ID |
+| `FB_PAGE_TOKEN` | Page token |
 
 Never commit the token or paste it into a post, issue or chat.
 

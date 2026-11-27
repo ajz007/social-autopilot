@@ -279,7 +279,7 @@ def cmd_setup_token() -> int:
         print(f"  FB_PAGE_ID     {page['id']}")
         print(f"  IG_USER_ID     {ig}")
         print(f"  FB_PAGE_TOKEN  {page['access_token']}")
-    print("\nStore these as repository secrets (for example SPP_FB_PAGE_ID, SPP_IG_USER_ID, SPP_FB_PAGE_TOKEN).")
+    print("\nStore these as repository secrets (FB_PAGE_ID, IG_USER_ID, FB_PAGE_TOKEN).")
     print("A Page token made from a long-lived user token does not expire, but changing your")
     print("Facebook password or removing the app from your account revokes it.")
     return 0
